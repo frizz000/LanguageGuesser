@@ -25,7 +25,7 @@ public class LanguageClassifier {
         }
 
         for (int i = 0; i < features.length; i++) {
-            features[i] /= totalCount;
+            features[i] = features[i] / totalCount;
         }
         return features;
     }
@@ -51,8 +51,17 @@ public class LanguageClassifier {
                 maxIndex = i;
             }
         }
-
+//        for (int i = 0; i < perceptrons.size(); i++) {
+//            Perceptron perceptron = perceptrons.get(i);
+//            double threshold = perceptron.predict(features);
+//            System.out.println(languages.get(i) + " " + threshold);
+//        }
+//        System.out.println("=====================================");
         return languages.get(maxIndex);
+    }
+
+    public List<Perceptron> getPerceptrons() {
+        return perceptrons;
     }
 }
 

@@ -18,7 +18,7 @@ public class App extends Application {
     private List<String> languages;
     private List<Language> languageDataTrain;
     private List<Language> languageDataTest;
-    private double learningRate = 0.5;
+    private double learningRate = 1;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,7 +26,7 @@ public class App extends Application {
 
     private void trainClassifier() {
         classifier = new LanguageClassifier(languages, learningRate);
-        classifier.train(languageDataTrain, languageDataTest, 1000, 100);
+        classifier.train(languageDataTrain, languageDataTest, 1000, 10);
     }
 
     @Override
@@ -59,10 +59,10 @@ public class App extends Application {
         Label languagesLabel = new Label();
         grid.add(languagesLabel, 0, 4, 2, 1);
 
-        Label learningRateLabel = new Label("Learning rate:");
+        Label learningRateLabel = new Label("Learning rate (0-1):");
         grid.add(learningRateLabel, 0, 5);
 
-        TextField learningRateInput = new TextField("0.5");
+        TextField learningRateInput = new TextField("1");
         grid.add(learningRateInput, 1, 5);
 
         Button retrainButton = new Button("Retrain");
@@ -81,7 +81,7 @@ public class App extends Application {
             }
         }
 
-        StringBuilder languagesList = new StringBuilder("Lista języków:\n");
+        StringBuilder languagesList = new StringBuilder("Languages:\n");
         for (String language : languages) {
             languagesList.append(language).append("\n");
         }
@@ -94,6 +94,16 @@ public class App extends Application {
             inputText = inputText.toLowerCase().replaceAll("[^a-zA-Z]", "");
             String predictedLanguage = classifier.classify(inputText);
             resultLabel.setText("Predicted Language: " + predictedLanguage);
+
+            StringBuilder thresholds = new StringBuilder("Thresholds:\n");
+            double[] features = LanguageClassifier.extractFeatures(inputText);
+            for (int i = 0; i < classifier.getPerceptrons().size(); i++) {
+                Perceptron perceptron = classifier.getPerceptrons().get(i);
+                double threshold = perceptron.predict(features);
+                String language = languages.get(i);
+                thresholds.append(language).append(": ").append(threshold).append("\n");
+            }
+            languagesLabel.setText(thresholds.toString());
         });
 
         retrainButton.setOnAction(e -> {

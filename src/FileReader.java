@@ -4,16 +4,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileReader {
-    public static List<Language> parse(String dir) {
+    public static List<Language> parse(String path) {
         List<Language> data = new ArrayList<>();
 
-        try (DirectoryStream<Path> directories = Files.newDirectoryStream(Paths.get(dir))) {
+        try (DirectoryStream<Path> directories = Files.newDirectoryStream(Paths.get(path))) {
             for (Path directory : directories) {
                 if (Files.isDirectory(directory)) {
                     String language = directory.getFileName().toString();
@@ -27,12 +26,11 @@ public class FileReader {
                     }
                 }
             }
-            Collections.shuffle(data);
+            //Collections.shuffle(data);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return data;
     }
 
